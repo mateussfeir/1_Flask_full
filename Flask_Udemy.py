@@ -1,11 +1,11 @@
 
-from flask import Flask, redirect, url_for, render_template, request
+from flask import Flask, redirect, url_for, render_template, request, session
 import pandas as pd
 
 app = Flask(__name__)
+app.secret_key = 'hello'
 
 @app.route('/')
-
 def index():
     return render_template('index.html')
 
@@ -13,20 +13,33 @@ def index():
 def login():
     if request.method == 'POST':
         user = request.form["nm"]
-        return redirect(url_for('user', usr=user))
+        session['user'] = user
+        return redirect(url_for('user'))
     else:
+        if 'user' in session:
+            return redirect(url_for('user'))
         return render_template('login.html')
 
-@app.route('/<usr>')
-def user(usr):
-    return f'<h1>{usr}</h1>'
+@app.route('/user')
+def user():
+    if 'user' in session:
+        user = session['user']
+        return f'<h1>{user}</h1>'
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/logout')
+def logoout():
+    session.pop('user', None)
+    return redirect(url_for('login'))
 
 @app.route('/new')
-
 def test():
     return render_template('new.html')
 
 
+if __name__ == '__main__':
+    app.run(debug=True, port= 8080)
 
 
 
@@ -54,9 +67,6 @@ def test():
 #     # return 'Price for ' + ticker.uuper() + ': ' + str(new_price) + '$'
 #     return 'Price:' + str(new_price) + '$'
 
-
-if __name__ == '__main__':
-    app.run(debug=True, port= 8080)
 
 
 ''' 
