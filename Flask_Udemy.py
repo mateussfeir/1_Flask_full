@@ -1,9 +1,12 @@
 
-from flask import Flask, redirect, url_for, render_template, request, session
-import pandas as pd
+from flask import Flask, redirect, url_for, render_template, request, session, flash
+from datetime import timedelta
+
 
 app = Flask(__name__)
 app.secret_key = 'hello'
+# Using permanent_session_lifetime we are setting how long the page will log automatically in the last account logged.
+app.permanent_session_lifetime = timedelta(minutes=5)
 
 @app.route('/')
 def index():
@@ -12,6 +15,7 @@ def index():
 @app.route('/login', methods = ['POST', 'GET'])
 def login():
     if request.method == 'POST':
+        session.permanent = True
         user = request.form["nm"]
         session['user'] = user
         return redirect(url_for('user'))
@@ -24,12 +28,15 @@ def login():
 def user():
     if 'user' in session:
         user = session['user']
-        return f'<h1>{user}</h1>'
+        return f"<h1>{'User: ' + user}</h1>"
     else:
         return redirect(url_for('login'))
 
 @app.route('/logout')
-def logoout():
+def logout():
+    if 'user' in session:
+        user = session['user']
+        flash(f'You have been logged out! {user}', 'info')
     session.pop('user', None)
     return redirect(url_for('login'))
 
@@ -40,33 +47,6 @@ def test():
 
 if __name__ == '__main__':
     app.run(debug=True, port= 8080)
-
-
-
-
-
-
-
-
-
-# @app.route('/price', methods=['GET'])
-
-# def get_price():
-#     # ticker = request.form['ticker']
-#     url = 'https://www.alphavantage.co/query'
-#     params = {'function': 'TIME_SERIES_DAILY_ADJUSTED', 
-#             # 'symbol': ticker.upper(),
-#             'symbol': 'TSLA',
-#             'apikey': 'TE1E1KD330UYLRHQ'}  
-#     response = requests.get(url, params=params)
-#     data = response.json()
-#     df = pd.DataFrame.from_dict(data['Time Series (Daily)'], orient='index')
-#     df = df.astype(float)
-#     df.index = pd.to_datetime(df.index)
-#     new_price = df.iloc[0]['4. close']
-#     # return 'Price for ' + ticker.uuper() + ': ' + str(new_price) + '$'
-#     return 'Price:' + str(new_price) + '$'
-
 
 
 ''' 
