@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Return Simulator{% endblock %}
+
+{% block content %}
+<h2>Welcome to the return simulator page!</h2>
+
+<form action="#" method="POST">
+    <p>Choose the stock you want to simulate the investment:</p>
+    <p><input type="text" name="stock"/></p>
+    
+    <p>Choose how much money you invested:</p>
+    <p><input type="text" name="money"/></p>
+    
+    <p>Choose the date:</p>
+    <p><input type="date" name="date"/></p>
+
+    <p><input type="submit" value="submit"/></p>
+    <p>Input: {{stock}}, {{money}}$, {{date}}</p>
+    <p>The current price is: {{new_price}}$</p>
+    <p>The price at the time was: {{old_price}}$</p>
+    <p>So you would have a return of {{percentage_return}}%</p>
+    <p>It mean's your position would be worth {{actual_value}}$ now.</p>
+    <p>A profit/loss of {{profit_loss}}</p>
+</form> 
+
+{% endblock %}
