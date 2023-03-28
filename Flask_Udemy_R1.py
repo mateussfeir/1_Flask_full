@@ -153,7 +153,7 @@ def simulate():
         session['old_price'] = round(old_price, 2)
         new_price = df.iloc[0]['4. close']
         session['new_price'] = round(new_price, 2)
-        percentage_return = round((1 - new_price/old_price)*100, 2)
+        percentage_return = round((new_price/old_price - 1)*100, 2)
         session['percentage_return'] = percentage_return
         fmoney = float(money)
         actual_value = (fmoney + (fmoney*(percentage_return/100)))
